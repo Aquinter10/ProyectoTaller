@@ -39,41 +39,41 @@ import matplotlib.pyplot as plt
 import io
 import base64
 from django.shortcuts import render
-from .models import Movie  # Adjust this import based on your project's structure
+from .models import Movie  
 from collections import defaultdict
 
 def statistics_view(request):
     # Fetch all movies
     movies = Movie.objects.all()
     
-    movie_counts_by_primary_genre = defaultdict(int)  # Use defaultdict to automatically initialize counts
+    movie_counts_by_primary_genre = defaultdict(int)  
 
-    # Process each movie to extract its primary genre
+    
     for movie in movies:
-        genres = movie.genre.split(',')  # Assuming genres are separated by commas
-        if genres:  # Check if there's at least one genre
-            primary_genre = genres[0].strip()  # Get the first genre and strip any leading/trailing whitespace
+        genres = movie.genre.split(',') 
+        if genres: 
+            primary_genre = genres[0].strip()  
             movie_counts_by_primary_genre[primary_genre] += 1
         else:
-            movie_counts_by_primary_genre['None'] += 1  # Handle movies without a genre
+            movie_counts_by_primary_genre['None'] += 1  
 
-    # Prepare data for plotting
+    
     genres = list(movie_counts_by_primary_genre.keys())
     counts = list(movie_counts_by_primary_genre.values())
     bar_positions = range(len(genres))
     
-    # Create the bar chart
-    plt.figure(figsize=(10, 8))  # Adjust the figure size as needed
+    
+    plt.figure(figsize=(10, 8))  
     plt.bar(bar_positions, counts, width=0.5, align='center')
     
-    # Customize the chart
+    
     plt.title('Pelis por genero')
     plt.xlabel('Primary Genre')
     plt.ylabel('Number of Movies')
     plt.xticks(bar_positions, genres, rotation=90)
     
-    # Adjust layout
-    plt.tight_layout()  # Use tight_layout to automatically adjust subplot parameters
+    
+    plt.tight_layout()  #
     
     # Save the chart to a BytesIO object
     buffer = io.BytesIO()
@@ -87,5 +87,5 @@ def statistics_view(request):
     graphic = base64.b64encode(image_png)
     graphic = graphic.decode('utf-8')
     
-    # Render the template statistics.html with the chart
+ 
     return render(request, 'statistics.html', {'graphic': graphic})
